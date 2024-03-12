@@ -1,0 +1,77 @@
+name: Docker Image Release
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "elephantcode.json"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: read version from elephantcode.json or get latest tag
+        id: get_tag
+        run: |
+          json=$(cat elephantcode.json)
+          version=$(echo $json | jq -r '.version')
+          IFS='.' read -ra ADDR <<< "$version"
+          NEW_PATCH=$((ADDR[2] + 1))
+          version_new="${ADDR[0]}.${ADDR[1]}.$NEW_PATCH"
+          echo "::set-output name=tag::$version_new"
+          echo $version_new
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USER }}/elephantcode:${{ steps.get_tag.outputs.tag }}
+
+      - name: Checkout GitOpselephantcode repository
+        uses: actions/checkout@v2
+        with:
+          repository: Shadowfordevops/gitOpsElephantCode
+          path: gitOpsElephantCode
+          token: ${{ secrets.GIT_TOKEN }}
+          
+      - name: Update Docker image tag in elephantcode.yaml
+        run: |
+          sed -i 's|image: ${{ secrets.DOCKERHUB_USER }}/elephantcode:.*|image: ${{ secrets.DOCKERHUB_USER }}/elephantcode:${{ steps.get_tag.outputs.tag }}|' gitOpsElephantCode/elephant/deploy_elephant.yaml
+      - name: Commit and push changes
+        run: |
+          cd gitOpsElephantCode
+          cat elephant/deploy_elephant.yaml
+          git config --global user.name "Shadowfordevops"
+          git config --global user.email "rodav@smart-it.com"
+          git add .
+          git commit -m "Update Docker image tag to ${{ steps.project_version.outputs.version }}"
+          git push
+
+      - name: Checkout elephantcode repository
+        uses: actions/checkout@v2
+        with:
+          repository: Shadowfordevops/elephantCode
+          path: elephantCode
+          token: ${{ secrets.GIT_TOKEN }}
+
+      - name: Commit and push changes2
+        run: |
+          cd elephantCode
+          ls
+          jq '.version = "'${{ steps.get_tag.outputs.tag }}'"' elephantcode.json > temp.json && mv temp.json elephantcode.json
+          git config --global user.name "Shadowfordevops"
+          git config --global user.email "rodav@smart-it.com"
+          git add .
+          git commit -m "Update Docker image version to ${{ steps.project_version.outputs.version }}"
+          git push origin main
