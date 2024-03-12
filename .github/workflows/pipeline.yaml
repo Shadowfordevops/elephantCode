@@ -55,7 +55,7 @@ jobs:
           git config --global user.name "Shadowfordevops"
           git config --global user.email "rodav@smart-it.com"
           git add .
-          git commit -m "Update Docker image tag to ${{ steps.project_version.outputs.version }}"
+          git commit --allow-empty  -m "Update Docker image tag to ${{ steps.project_version.outputs.version }}"
           git push
 
       - name: Checkout elephantcode repository
