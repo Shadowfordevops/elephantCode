@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://github.com/Shadowfordevops/gitOpsElephantCode.git
     targetRevision: HEAD
-    path: my-app
+    path: elephant
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:
