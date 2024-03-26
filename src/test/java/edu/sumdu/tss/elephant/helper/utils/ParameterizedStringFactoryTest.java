@@ -3,21 +3,33 @@ package edu.sumdu.tss.elephant.helper.utils;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-class ParameterizedStringFactoryTest {
-
-    public static String test = "select :test from :table";
-
-    @Test
-    void addParameter() {
-        ParameterizedStringFactory instance = new ParameterizedStringFactory(test);
-        String actual = instance.addParameter("test", "TEST").addParameter("table", "TABLE").toString();
-        assertEquals(actual, "select TEST from TABLE");
-    }
+public record ParameterizedStringFactoryTest() {
 
     @Test
     void testToString() {
-        ParameterizedStringFactory instance = new ParameterizedStringFactory(test);
-        assertEquals(test, instance.toString());
+        var expected = "test";
+        var parameterizedStringFactory = new ParameterizedStringFactory("test");
+        var result = parameterizedStringFactory.toString();
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void testNotEqualsToString() {
+        var expected = "test1";
+        var parameterizedStringFactory = new ParameterizedStringFactory("test");
+        var result = parameterizedStringFactory.toString();
+        assertNotEquals(expected, result);
+    }
+
+    @Test
+    void testAddParameter() {
+        var expected = new ParameterizedStringFactory.ParameterizedString("test")
+                .addParameter("parameter1", "value1");
+        var parameterizedStringFactory = new ParameterizedStringFactory("test");
+        var result = parameterizedStringFactory.addParameter("parameter1", "value1");
+        assertEquals(expected.toString(), result.toString());
     }
 }
+

@@ -6,7 +6,7 @@
         <div class="col-lg-7 text-center">
             <img src="/images/hero.svg" style="height:20rem" alt="logotype"/>
             <h1 class="display-4 lh-1 mb-3 logotype-font">Elephant</h1>
-            <h2 class="fs-4">DaaS2<span title="Database as a Service">*</span> just for the Testing</h2>
+            <h2 class="fs-4">DaaS<span title="Database as a Service">*</span> just for the Testing</h2>
         </div>
         <div class="col-md-10 mx-auto col-lg-5">
             #parse("/velocity/snippets/_notice.vm")

@@ -88,11 +88,6 @@ public class UserService {
             for (var scope : SPACE_SCOPES) {
                 File subPath = new File(path + File.separator + scope);
                 FileUtils.forceMkdir(subPath);
-                if (scope.equals("tablespace") && !SystemUtils.IS_OS_WINDOWS) {
-                    /* Under *nix OS tablespace folder must be owned by RDBMS-owner user   */
-                    CmdUtil.exec(CHANGE_MODE.addParameter("path", subPath.getPath()).toString());
-                    CmdUtil.exec(CHANGE_OWNER.addParameter("user", Keys.get("DB.OS_USER")).addParameter("path", subPath.getPath()).toString());
-                }
             }
         } catch (Exception ex) {
             throw new RuntimeException(ex);

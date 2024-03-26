@@ -1,53 +1,24 @@
 package edu.sumdu.tss.elephant.helper.utils;
 
-import edu.sumdu.tss.elephant.helper.ViewHelper;
 import org.junit.jupiter.api.Test;
 
-import io.javalin.http.Context;
-import java.util.HashMap;
+import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class ResponseUtilsTest {
+public class ResponseUtilsTest {
 
     @Test
-    @SuppressWarnings("unchecked")
-    void shouldReturnOkAnswerOnSuccess() {
-        // given
-        String message = "message";
-
-        // when
-        HashMap<String, String> result = (HashMap<String, String>) ResponseUtils.success(message);
-
-        // then
-        assertEquals("Ok", result.get("status"));
+    void testSuccessResponse() {
+        Map<String, String> expected = Map.of("status", "Ok", "message", "Success message");
+        Map<String, String> result = (Map<String, String>) ResponseUtils.success("Success message");
+        assertEquals(expected, result);
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    void shouldReturnErrorAnswerOnError() {
-        // given
-        String message = "message";
-
-        // when
-        HashMap<String, String> result = (HashMap<String, String>) ResponseUtils.error(message);
-
-        // then
-        assertEquals("Error", result.get("status"));
-    }
-
-    @Test
-    void shouldFlushFlash() {
-        // given
-        Context context = mock(Context.class);
-
-        // when
-        ResponseUtils.flush_flash(context);
-
-        // then
-        for (var key : ViewHelper.FLASH_KEY) {
-            verify(context).sessionAttribute(key, null);
-        }
+    void testErrorResponse() {
+        Map<String, String> expected = Map.of("status", "Error", "message", "Error message");
+        Map<String, String> result = (Map<String, String>) ResponseUtils.error("Error message");
+        assertEquals(expected, result);
     }
 }

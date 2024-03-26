@@ -1,6 +1,6 @@
-drop table if exists backups;
-drop table if exists databases;
-drop table if exists users;
+drop table backups;
+drop table databases;
+drop table users;
 
 CREATE ROLE customer;
 

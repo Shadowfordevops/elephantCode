@@ -21,7 +21,7 @@ public class DbUserService {
         //Create tablespace
         String path = UserService.userStoragePath(username);
         System.out.println("Tablespace path:" + path);
-        UserService.createTablespace(username, path + "/tablespace");
+        UserService.createTablespace(username, path + File.separator + "tablespace");
     }
 
     //TODO: SQL injection here!

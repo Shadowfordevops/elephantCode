@@ -62,7 +62,7 @@ dashboard:
   profile:
     title: "Profile"
   jumbotron:
-    title: "Hi, newcomer!"
+    title: "Hi, {0}!"
     message: "Check your mail and push mail-verification link - to be able create new database."
     button: "Resend mail"
 database:
