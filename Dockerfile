@@ -5,7 +5,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN mvn clean install -DskipTest=true
+RUN mvn clean install -DskipTests=true
 
 FROM ubuntu:22.04
 
